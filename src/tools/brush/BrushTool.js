@@ -15,8 +15,8 @@ const { state } = store.modules.brush;
  * @extends Tools.Base.BaseBrushTool
  */
 export default class BrushTool extends BaseBrushTool {
-  constructor(configuration = {}) {
-    const defaultConfig = {
+  constructor(props = {}) {
+    const defaultProps = {
       name: 'Brush',
       supportedInteractionTypes: ['Mouse'],
       strategies: {
@@ -26,11 +26,8 @@ export default class BrushTool extends BaseBrushTool {
       defaultStrategy: 'overlapping',
       configuration: {},
     };
-    const initialConfiguration = Object.assign(defaultConfig, configuration);
 
-    super(initialConfiguration);
-
-    this.initialConfiguration = initialConfiguration;
+    super(props, defaultProps);
   }
 
   /**
