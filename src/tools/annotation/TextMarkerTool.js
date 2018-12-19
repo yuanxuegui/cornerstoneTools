@@ -18,8 +18,8 @@ import {
  * @extends Tools.Base.BaseAnnotationTool
  */
 export default class TextMarkerTool extends BaseAnnotationTool {
-  constructor(configuration = {}) {
-    const defaultConfig = {
+  constructor(props = {}) {
+    const defaultProps = {
       name: 'TextMarker',
       supportedInteractionTypes: ['Mouse', 'Touch'],
       configuration: {
@@ -30,11 +30,8 @@ export default class TextMarkerTool extends BaseAnnotationTool {
         changeTextCallback,
       },
     };
-    const initialConfiguration = Object.assign(defaultConfig, configuration);
 
-    super(initialConfiguration);
-
-    this.initialConfiguration = initialConfiguration;
+    super(props, defaultProps);
     this.touchPressCallback = this._changeText.bind(this);
     this.doubleClickCallback = this._changeText.bind(this);
   }

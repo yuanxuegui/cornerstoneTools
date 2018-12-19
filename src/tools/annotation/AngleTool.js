@@ -30,19 +30,17 @@ import roundToDecimal from './../../util/roundToDecimal.js';
  * @extends Tools.Base.BaseAnnotationTool
  * @hideconstructor
  *
- * @param {ToolConfiguration} [configuration={}]
+ * @param {ToolConfiguration} [props={}]
  */
 class AngleTool extends BaseAnnotationTool {
-  constructor(configuration = {}) {
-    const defaultConfig = {
+  constructor(props = {}) {
+    const defaultProps = {
       name: 'Angle',
       supportedInteractionTypes: ['Mouse', 'Touch'],
     };
-    const initialConfiguration = Object.assign(defaultConfig, configuration);
 
-    super(initialConfiguration);
+    super(props, defaultProps);
 
-    this.initialConfiguration = initialConfiguration;
     this.preventNewMeasurement = false;
   }
 

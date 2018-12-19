@@ -31,16 +31,14 @@ import EVENTS from './../../events.js';
  * @extends Tools.Base.BaseAnnotationTool
  */
 export default class CobbAngleTool extends BaseAnnotationTool {
-  constructor(configuration = {}) {
-    const defaultConfig = {
+  constructor(props = {}) {
+    const defaultProps = {
       name: 'CobbAngle',
       supportedInteractionTypes: ['Mouse', 'Touch'],
     };
-    const initialConfiguration = Object.assign(defaultConfig, configuration);
 
-    super(initialConfiguration);
+    super(props, defaultProps);
 
-    this.initialConfiguration = initialConfiguration;
     this.hasIncomplete = false;
   }
 

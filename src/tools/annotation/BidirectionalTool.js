@@ -35,7 +35,7 @@ export default class BidirectionalTool extends BaseAnnotationTool {
       },
     };
 
-    super(defaultProps, props);
+    super(props, defaultProps);
 
     this.createNewMeasurement = createNewMeasurement.bind(this);
     this.pointNearTool = pointNearTool.bind(this);
