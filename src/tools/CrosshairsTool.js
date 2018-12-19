@@ -21,16 +21,14 @@ import { setToolOptions } from '../toolOptions.js';
  * @extends Tools.Base.BaseTool
  */
 export default class CrosshairsTool extends BaseTool {
-  constructor(configuration = {}) {
-    const defaultConfig = {
+  constructor(props = {}) {
+    const defaultProps = {
       name: 'Crosshairs',
       supportedInteractionTypes: ['Mouse', 'Touch'],
     };
-    const initialConfiguration = Object.assign(defaultConfig, configuration);
 
-    super(initialConfiguration);
+    super(props, defaultProps);
 
-    this.initialConfiguration = initialConfiguration;
     this.mouseDownCallback = this._chooseLocation.bind(this);
     this.mouseDragCallback = this._chooseLocation.bind(this);
     this.touchDragCallback = this._chooseLocation.bind(this);

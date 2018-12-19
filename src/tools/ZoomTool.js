@@ -14,8 +14,8 @@ const { correctShift, changeViewportScale } = zoomUtils;
  * @extends Tools.Base.BaseTool
  */
 export default class ZoomTool extends BaseTool {
-  constructor(configuration = {}) {
-    const defaultConfig = {
+  constructor(props = {}) {
+    const defaultProps = {
       name: 'Zoom',
       strategies: {
         default: defaultStrategy,
@@ -31,11 +31,8 @@ export default class ZoomTool extends BaseTool {
         maxScale: 20.0,
       },
     };
-    const initialConfiguration = Object.assign(defaultConfig, configuration);
 
-    super(initialConfiguration);
-
-    this.initialConfiguration = initialConfiguration;
+    super(props, defaultProps);
   }
 
   touchDragCallback(evt) {

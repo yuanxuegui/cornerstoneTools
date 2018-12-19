@@ -12,16 +12,13 @@ import { state } from '../store/index.js';
  * @extends Tools.Base.BaseTool
  */
 export default class EraserTool extends BaseTool {
-  constructor(configuration = {}) {
-    const defaultConfig = {
+  constructor(props = {}) {
+    const defaultProps = {
       name: 'Eraser',
       supportedInteractionTypes: ['Mouse', 'Touch'],
     };
-    const initialConfiguration = Object.assign(defaultConfig, configuration);
 
-    super(initialConfiguration);
-
-    this.initialConfiguration = initialConfiguration;
+    super(props, defaultProps);
 
     this.preMouseDownCallback = this._deleteAllNearbyTools.bind(this);
     this.preTouchStartCallback = this._deleteAllNearbyTools.bind(this);

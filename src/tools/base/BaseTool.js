@@ -25,7 +25,7 @@ class BaseTool {
     /**
      * Merge default props with custom props
      */
-    props = deepmerge(defaultProps, props);
+    this.initialConfiguration = deepmerge(defaultProps, props);
 
     const {
       name,
@@ -34,7 +34,7 @@ class BaseTool {
       configuration,
       supportedInteractionTypes,
       mixins,
-    } = props;
+    } = this.initialConfiguration;
     /**
      * A unique, identifying tool name
      * @type {String}

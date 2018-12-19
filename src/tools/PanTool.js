@@ -10,16 +10,14 @@ import BaseTool from './base/BaseTool.js';
  * @extends Tools.Base.BaseTool
  */
 export default class PanTool extends BaseTool {
-  constructor(configuration = {}) {
-    const defaultConfig = {
+  constructor(props = {}) {
+    const defaultProps = {
       name: 'Pan',
       supportedInteractionTypes: ['Mouse', 'Touch'],
     };
-    const initialConfiguration = Object.assign(defaultConfig, configuration);
 
-    super(initialConfiguration);
+    super(props, defaultProps);
 
-    this.initialConfiguration = initialConfiguration;
     // Touch
     this.touchDragCallback = this._dragCallback.bind(this);
     // Mouse

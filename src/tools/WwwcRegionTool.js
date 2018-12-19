@@ -16,19 +16,16 @@ import toolColors from '../stateManagement/toolColors.js';
  */
 export default class WwwcRegionTool extends BaseTool {
   /** @inheritdoc */
-  constructor(configuration = {}) {
-    const defaultConfig = {
+  constructor(props = {}) {
+    const defaultProps = {
       name: 'WwwcRegion',
       supportedInteractionTypes: ['Mouse', 'Touch'],
       configuration: {
         minWindowWidth: 10,
       },
     };
-    const initialConfiguration = Object.assign(defaultConfig, configuration);
 
-    super(initialConfiguration);
-
-    this.initialConfiguration = initialConfiguration;
+    super(props, defaultProps);
     this._resetHandles();
 
     //
