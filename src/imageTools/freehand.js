@@ -124,6 +124,9 @@ function pointNearTool (element, data, coords) {
  * @return {Number|Object|Boolean}
  */
 function pointNearHandle (element, data, coords) {
+  if (!data) {
+    return;
+  }
   const config = freehand.getConfiguration();
 
   if (data.handles === undefined) {
@@ -425,6 +428,9 @@ function mouseDownCallback (e) {
     mouseDownPassive(e);
   } else {
     const toolData = getToolState(eventData.element, toolType);
+    if (!toolData || !toolData.data[currentTool]) {
+      return;
+    }
 
     if (currentTool >= 0 && toolData.data[currentTool].active) {
       mouseDownActive(e, toolData, currentTool);
@@ -491,7 +497,7 @@ function mouseMoveActive (eventData, toolData) {
 
     // If there is a handle nearby to snap to
     // (and it's not the actual mouse handle)
-    if (handleNearby !== null && !handleNearby.hasBoundingBox && handleNearby < (data.handles.length - 1)) {
+    if (handleNearby && !handleNearby.hasBoundingBox && handleNearby < (data.handles.length - 1)) {
       config.mouseLocation.handles.start.x = data.handles[handleNearby].x;
       config.mouseLocation.handles.start.y = data.handles[handleNearby].y;
     }
@@ -513,6 +519,9 @@ function mouseDoubleClickCallback (e) {
  * @return {Boolean}
  */
 function checkInvalidHandleLocation (data) {
+  if (!data) {
+    return true;
+  }
   const config = freehand.getConfiguration();
 
   if (data.handles.length < 2) {
@@ -1005,7 +1014,6 @@ function onImageRendered (e) {
   }
 }
 
-
 function calculateStatistics (data, element, image, modality, rowPixelSpacing, columnPixelSpacing) {
   const cornerstone = external.cornerstone;
 
@@ -1112,6 +1120,7 @@ function enable (element) {
   closeToolIfDrawing(element);
   removeEventListeners(element);
   element.addEventListener(external.cornerstone.EVENTS.IMAGE_RENDERED, onImageRendered);
+  element.addEventListener(external.cornerstone.EVENTS.NEW_IMAGE, onNewImage);
   external.cornerstone.updateImage(element);
 }
 
@@ -1141,6 +1150,7 @@ function activate (element, mouseButtonMask) {
   removeEventListeners(element);
 
   element.addEventListener(external.cornerstone.EVENTS.IMAGE_RENDERED, onImageRendered);
+  element.addEventListener(external.cornerstone.EVENTS.NEW_IMAGE, onNewImage);
   element.addEventListener(EVENTS.MOUSE_MOVE, mouseMoveCallback);
   element.addEventListener(EVENTS.MOUSE_DOWN, mouseDownCallback);
   element.addEventListener(EVENTS.MOUSE_DOWN_ACTIVATE, mouseDownActivateCallback);
@@ -1176,6 +1186,7 @@ function deactivate (element, mouseButtonMask) {
   removeEventListeners(element);
 
   element.addEventListener(external.cornerstone.EVENTS.IMAGE_RENDERED, onImageRendered);
+  element.addEventListener(external.cornerstone.EVENTS.NEW_IMAGE, onNewImage);
   element.addEventListener(EVENTS.MOUSE_MOVE, mouseMoveCallback);
   element.addEventListener(EVENTS.MOUSE_DOWN, mouseDownCallback);
   element.addEventListener(EVENTS.KEY_DOWN, keyDownCallback);
@@ -1197,6 +1208,7 @@ function removeEventListeners (element) {
   element.removeEventListener(EVENTS.MOUSE_UP, mouseUpCallback);
   element.removeEventListener(EVENTS.MOUSE_MOVE, mouseMoveCallback);
   element.removeEventListener(external.cornerstone.EVENTS.IMAGE_RENDERED, onImageRendered);
+  element.removeEventListener(external.cornerstone.EVENTS.NEW_IMAGE, onNewImage);
   element.removeEventListener(EVENTS.KEY_DOWN, keyDownCallback);
   element.removeEventListener(EVENTS.KEY_UP, keyUpCallback);
   element.removeEventListener(EVENTS.MOUSE_DOUBLE_CLICK, mouseDoubleClickCallback);
@@ -1259,6 +1271,16 @@ function setConfiguration (config) {
   configuration = config;
 }
 
+// HYHY: Add function to fix bug
+function onNewImage (e) {
+  const eventData = e.detail;
+  closeToolIfDrawing(eventData.element)
+}
+
+function cancelDrawing (element) {
+  closeToolIfDrawing(element)
+}
+
 // Module/private exports
 const freehand = {
   enable,
@@ -1267,7 +1289,8 @@ const freehand = {
   deactivate,
   getConfiguration,
   setConfiguration,
-  pointNearTool
+  pointNearTool,
+  cancelDrawing
 };
 
 export {
