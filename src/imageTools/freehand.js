@@ -898,6 +898,10 @@ function onImageRendered (e) {
             // If it's still being actively drawn, keep the last line to
             // The mouse location
             points.push(config.mouseLocation.handles.start);
+            // HYHY: Connect the end handle to the origin handle
+            if (data.handles.length > 1) {
+              points.push(data.handles[0]);
+            }
           }
           drawJoinedLines(context, eventData.element, data.handles[j], points, {
             color
@@ -1277,10 +1281,6 @@ function onNewImage (e) {
   closeToolIfDrawing(eventData.element)
 }
 
-function cancelDrawing (element) {
-  closeToolIfDrawing(element)
-}
-
 // Module/private exports
 const freehand = {
   enable,
@@ -1289,8 +1289,7 @@ const freehand = {
   deactivate,
   getConfiguration,
   setConfiguration,
-  pointNearTool,
-  cancelDrawing
+  pointNearTool
 };
 
 export {
