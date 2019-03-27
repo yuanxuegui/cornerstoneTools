@@ -68,7 +68,8 @@ let configuration = {
   modifying: false,
   movingTextBox: false,
   currentHandle: 0,
-  currentTool: -1
+  currentTool: -1,
+  autoConnectEndToOrigin: true
 };
 
 /**
@@ -243,7 +244,11 @@ function startDrawing (eventData) {
 
   const toolData = getToolState(eventData.element, toolType);
 
+
   config.currentTool = toolData.data.length - 1;
+
+  freehand._activeDrawingToolReference = toolData.data[config.currentTool];
+  freehand._drawing = true;
 }
 
 /**
@@ -371,6 +376,8 @@ function endDrawing (eventData, handleNearby) {
 
     triggerMeasurementCompletedEvent(eventData.element, data, toolType);
   }
+
+  freehand._drawing = false;
 
   external.cornerstone.updateImage(eventData.element);
 }
@@ -899,7 +906,7 @@ function onImageRendered (e) {
             // The mouse location
             points.push(config.mouseLocation.handles.start);
             // HYHY: Connect the end handle to the origin handle
-            if (data.handles.length > 1) {
+            if (config.autoConnectEndToOrigin && data.handles.length > 1) {
               points.push(data.handles[0]);
             }
           }
@@ -1278,11 +1285,52 @@ function setConfiguration (config) {
 // HYHY: Add function to fix bug
 function onNewImage (e) {
   const eventData = e.detail;
-  closeToolIfDrawing(eventData.element)
+  const element = eventData.element;
+
+  if (!(freehand._drawing && freehand._activeDrawingToolReference)) {
+    return;
+  }
+
+  // Actively drawing but scrolled to different image.
+
+  const data = freehand._activeDrawingToolReference;
+  const config = freehand.getConfiguration();
+  data.active = false;
+  data.highlight = false;
+  data.handles.invalidHandlePlacement = false;
+
+  // Connect the end handle to the origin handle
+  if (data.handles.length > 2) {
+    data.handles[config.currentHandle - 1].lines.push(data.handles[0]);
+  }
+
+  // Reset the current handle
+  config.currentHandle = 0;
+  config.currentTool = -1;
+  data.canComplete = false;
+
+  removeEventListeners(element);
+
+  element.addEventListener(external.cornerstone.EVENTS.IMAGE_RENDERED, onImageRendered);
+  element.addEventListener(external.cornerstone.EVENTS.NEW_IMAGE, onNewImage);
+  element.addEventListener(EVENTS.MOUSE_MOVE, mouseMoveCallback);
+  element.addEventListener(EVENTS.MOUSE_DOWN, mouseDownCallback);
+  element.addEventListener(EVENTS.MOUSE_DOWN_ACTIVATE, mouseDownActivateCallback);
+  element.addEventListener(EVENTS.KEY_DOWN, keyDownCallback);
+  element.addEventListener(EVENTS.KEY_UP, keyUpCallback);
+
+  element.addEventListener(EVENTS.MOUSE_DOUBLE_CLICK, mouseDoubleClickCallback);
+
+  freehand._activeDrawingToolReference = null;
+  freehand._drawing = false;
+
+  external.cornerstone.updateImage(element);
 }
 
 // Module/private exports
 const freehand = {
+  _drawing: false,
+  _activeDrawingToolReference: null,
   enable,
   disable,
   activate,
